@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      UserRole @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Member Member[]
+}
+
+model Member {
+  id         String       @id @default(cuid())
+  name       String
+  mobileNo   String
+  address    String
+  document   Json
+  extra      Json?
+  user       User         @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userid     String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  TourMember TourMember[]
+}
+
+model TourPackage {
+  id          String       @id @default(cuid())
+  packageName String
+  tourPrice   Float
+  totalSeat   Int
+  coverPhoto  String?
+  desc        String
+  extra       Json?
+  TourMember  TourMember[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model TourMember {
+  id String @id @default(cuid())
+
+  // Relations
+  members       Member[]
+  memberIds     Json
+  tourPackage   TourPackage @relation(fields: [tourPackageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tourPackageId String
+  payments      Payment[] // payment history
+
+  // Pricing & Group Info
+  packagePrice Float
+  memberCount  Int
+  netCost      Float
+  discount     Float?
+  totalCost    Float
+
+  // Payment
+  paymentType   PaymentType
+  paymentStatus PaymentStatus @default(PENDING)
+
+  // Reminder / WhatsApp
+  nextReminder  DateTime?
+  lastReminder  DateTime?
+  reminderCount Int       @default(0)
+
+  extra Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id           String     @id @default(cuid())
+  tourMember   TourMember @relation(fields: [tourMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tourMemberId String
+
+  amount        Float // paid amount
+  paymentDate   DateTime      @default(now())
+  paymentMethod String // UPI, Cash, Card, etc.
+  note          String? // optional note
+  status        PaymentStatus @default(PAID) // in case of failed or pending transactions
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum PaymentType {
+  ONE_TIME
+  EMI
+  PARTIAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  FAILED
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+  MEMBER
+}
