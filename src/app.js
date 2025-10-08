@@ -60,11 +60,11 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 
 app.use("/api/v1/payment-reminders", paymentReminderRoutes);
 app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/usersR", usersRoutes);
 
 // Routes
 
-app.use("/ai/v1/users", usersRoutes);
+// app.use("/ai/v1/users", usersRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

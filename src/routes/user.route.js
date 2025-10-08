@@ -9,13 +9,17 @@ import {
   resetPasswordSchema,
   getUsersQuerySchema,
 } from "../validations/user.validator.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  authorizeRoles,
+} from "../middlewares/auth.middleware.js";
+import { USER_ROLES } from "../constants/string.js";
 
 const router = Router();
 const userController = new UserController();
 
 // All routes require authentication
-router.use(authMiddleware);
+router.use(authMiddleware, authorizeRoles(USER_ROLES.ADMIN));
 
 /**
  * @route   GET /api/users
@@ -25,6 +29,7 @@ router.use(authMiddleware);
 router.get(
   "/",
   validate(getUsersQuerySchema, "query"),
+
   userController.getUsers
 );
 

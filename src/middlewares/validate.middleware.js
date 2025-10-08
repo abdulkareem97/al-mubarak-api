@@ -15,13 +15,19 @@ export const validate = (schema, source = "body") => {
       const validatedData = await schema.parseAsync(dataToValidate);
 
       // Replace the request data with validated data
-      req[source] = validatedData;
+      if (source == "query") {
+        Object.assign(req.query, validatedData);
+      } else {
+        req[source] = validatedData;
+      }
 
       next();
     } catch (error) {
+      console.log("error 123", error);
       if (error instanceof ZodError) {
+        console.log("error", error);
         // Format Zod errors
-        const errors = error.errors.map((err) => ({
+        const errors = error.issues.map((err) => ({
           field: err.path.join("."),
           message: err.message,
         }));
