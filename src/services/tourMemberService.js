@@ -14,6 +14,7 @@ class TourMemberService {
       paymentType,
       search,
       tourPackageId,
+      status,
     } = options;
 
     const skip = (page - 1) * limit;
@@ -29,6 +30,11 @@ class TourMemberService {
     }
     if (paymentType) {
       where.paymentType = paymentType;
+    }
+    if (status) {
+      where.status = status;
+    } else {
+      where.status = "BOOKED";
     }
     if (search) {
       where.OR = [
@@ -148,6 +154,7 @@ class TourMemberService {
       totalCost,
       paymentType,
       nextReminder,
+      status,
       extra,
     } = data;
 
@@ -187,6 +194,7 @@ class TourMemberService {
         paymentStatus: "PENDING",
         nextReminder: nextReminder ? new Date(nextReminder) : null,
         extra: extra || null,
+        status,
       },
       include: {
         tourPackage: {
@@ -429,9 +437,15 @@ class TourMemberService {
       totalRevenue,
     ] = await Promise.all([
       prisma.tourMember.count(),
-      prisma.tourMember.count({ where: { paymentStatus: "PENDING" } }),
-      prisma.tourMember.count({ where: { paymentStatus: "PARTIAL" } }),
-      prisma.tourMember.count({ where: { paymentStatus: "PAID" } }),
+      prisma.tourMember.count({
+        where: { paymentStatus: "PENDING", status: "BOOKED" },
+      }),
+      prisma.tourMember.count({
+        where: { paymentStatus: "PARTIAL", status: "BOOKED" },
+      }),
+      prisma.tourMember.count({
+        where: { paymentStatus: "PAID", status: "BOOKED" },
+      }),
       prisma.payment.aggregate({
         where: { status: "PAID" },
         _sum: { amount: true },
@@ -448,7 +462,9 @@ class TourMemberService {
   }
 
   async getTourMemberStatsByTourId(tourId) {
-    const whereClause = tourId ? { tourId } : {};
+    const whereClause = tourId
+      ? { tourId, status: "BOOKED" }
+      : { status: "BOOKED" };
 
     const [
       totalBookings,
@@ -472,7 +488,7 @@ class TourMemberService {
         where: { tourMember: { ...whereClause } },
         _sum: { amount: true },
       }),
-      prisma.tourPackage.count({ where: whereClause }),
+      prisma.tourPackage.count({ where: tourId ? { id: tourId } : {} }),
     ]);
 
     console.log("totalActiveTours", totalActiveTours);

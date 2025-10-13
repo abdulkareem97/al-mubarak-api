@@ -45,7 +45,7 @@ model TourPackage {
   tourPrice   Float
   totalSeat   Int
   coverPhoto  String?
-  desc        String
+  desc        String       @db.LongText
   extra       Json?
   TourMember  TourMember[]
   createdAt   DateTime     @default(now())
@@ -77,6 +77,8 @@ model TourMember {
   nextReminder  DateTime?
   lastReminder  DateTime?
   reminderCount Int       @default(0)
+
+  status TourMemberStatus @default(BOOKED)
 
   extra Json?
 
@@ -116,4 +118,9 @@ enum UserRole {
   MANAGER
   STAFF
   MEMBER
+}
+
+enum TourMemberStatus {
+  BOOKED
+  ENQUIRY
 }

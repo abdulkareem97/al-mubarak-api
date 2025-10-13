@@ -13,6 +13,7 @@ const createTourMemberSchema = z.object({
   totalCost: z.number().min(0, "Total cost must be positive"),
   paymentType: z.enum(["ONE_TIME", "EMI", "PARTIAL"]),
   nextReminder: z.string().datetime().optional(),
+  status: z.string().optional(),
   extra: z.object().optional(),
 });
 
@@ -30,6 +31,7 @@ const updateTourMemberSchema = z.object({
   lastReminder: z.string().datetime().optional(),
   reminderCount: z.number().int().min(0).optional(),
   extra: z.object().optional(),
+  status: z.string().optional(),
 });
 
 const addPaymentSchema = z.object({
@@ -65,6 +67,7 @@ const getTourMembersQuerySchema = z.object({
   paymentType: z.enum(["ONE_TIME", "EMI", "PARTIAL"]).optional(),
   search: z.string().optional(),
   tourPackageId: z.string().optional(),
+  status: z.string().optional(),
 });
 
 export {

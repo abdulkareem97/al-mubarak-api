@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Static files for uploaded documents
 app.use(
-  "/uploads",
+  "/api/uploads",
   express.static(path.join(__dirname, "uploads"), {
     setHeaders: (res) => {
       res.setHeader("Access-Control-Allow-Origin", "*"); // allow all origins

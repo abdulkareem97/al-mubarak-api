@@ -8,7 +8,7 @@ class TourPackageService {
   async createTourPackage(packageData, file) {
     try {
       // Process cover photo if provided
-      let coverPhotoPath = null;
+      let coverPhotoPath = "";
       if (file) {
         coverPhotoPath = file.path;
       }
