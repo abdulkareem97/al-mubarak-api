@@ -5,6 +5,14 @@ import { __dirname } from "../middlewares/upload.js";
 function generateRandom4DigitNumber() {
   return Math.floor(Math.random() * 9000) + 1000;
 }
+
+function generateUserId(lastId) {
+  if (!lastId) return "ALMB00001"; // No user found
+
+  const numberPart = parseInt(lastId.replace("ALMB", ""), 10); // Extract number
+  const nextNumber = numberPart + 1;
+  return `ALMB${String(nextNumber).padStart(5, "0")}`;
+}
 class MemberService {
   // Create new member
   async createMember(memberData, files) {
@@ -23,8 +31,23 @@ class MemberService {
         }));
       }
 
+      const lastUser = await prisma.user.findFirst({
+        where: {
+          id: { startsWith: "ALMB" },
+        },
+        orderBy: {
+          id: "desc", // Highest ID
+        },
+      });
+
+      // 2️⃣ Generate new ID
+      const newUserId = generateUserId(lastUser?.id);
+
+      console.log("newUserId", newUserId);
+
       const user = await prisma.user.create({
         data: {
+          id: newUserId,
           email:
             memberData.name + generateRandom4DigitNumber() + "@almubarak.com",
           name: memberData.name,
@@ -35,6 +58,7 @@ class MemberService {
       const { userCreated, ...memberRecord } = memberData;
       const member = await prisma.member.create({
         data: {
+          id: newUserId,
           ...memberRecord,
           userid: user.id,
           document: documentJson,
