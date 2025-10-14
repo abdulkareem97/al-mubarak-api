@@ -100,6 +100,22 @@ model Payment {
   updatedAt     DateTime      @updatedAt
 }
 
+model EnquiryForm {
+  id        String            @id @default(cuid())
+  name      String
+  phone     String
+  purpose   String            @db.LongText
+  status    EnquiryFormStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+enum EnquiryFormStatus {
+  PENDING
+  BOOKED
+  NOT_INTERESTED
+}
+
 enum PaymentType {
   ONE_TIME
   EMI

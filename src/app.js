@@ -12,7 +12,7 @@ import tourMembersRoutes from "./routes/tourMemberRoutes.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import paymentReminderRoutes from "./routes/paymentReminderRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-
+import enquiryRoutes from "./routes/enquiry.routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -57,6 +57,7 @@ app.use("/api/v1/members", memberRoutes);
 app.use("/api/v1/tour-packages", tourPackageRoutes);
 app.use("/api/v1/tour-members", tourMembersRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/enquiries", enquiryRoutes);
 
 app.use("/api/v1/payment-reminders", paymentReminderRoutes);
 app.use("/api/v1/users", userRoutes);
