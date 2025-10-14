@@ -98,6 +98,9 @@ class MemberService {
             user: {
               select: { id: true, email: true, name: true },
             },
+            createdBy: {
+              select: { id: true, email: true, name: true },
+            },
             TourMember: true,
           },
           orderBy: { createdAt: "desc" },

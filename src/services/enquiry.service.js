@@ -38,6 +38,11 @@ export const getAllEnquiriesService = async (page = 1, limit = 10) => {
 
     const [enquiries, total] = await Promise.all([
       prisma.enquiryForm.findMany({
+        include: {
+          createdBy: {
+            select: { id: true, email: true, name: true },
+          },
+        },
         skip,
         take: limit,
         orderBy: {

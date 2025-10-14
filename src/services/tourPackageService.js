@@ -76,6 +76,11 @@ class TourPackageService {
       const [tourPackages, total] = await Promise.all([
         prisma.tourPackage.findMany({
           where,
+          include: {
+            createdBy: {
+              select: { id: true, email: true, name: true },
+            },
+          },
           skip,
           take: Number(limit),
           orderBy,

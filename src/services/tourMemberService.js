@@ -67,6 +67,13 @@ class TourMemberService {
               desc: true,
             },
           },
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
           payments: {
             orderBy: {
               createdAt: "desc",
@@ -118,6 +125,15 @@ class TourMemberService {
         payments: {
           orderBy: {
             createdAt: "desc",
+          },
+          include: {
+            createdBy: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
         members: {
@@ -207,6 +223,7 @@ class TourMemberService {
             desc: true,
           },
         },
+
         payments: true,
         members: {
           select: {
