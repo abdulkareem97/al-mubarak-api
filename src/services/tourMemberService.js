@@ -143,7 +143,7 @@ class TourMemberService {
   }
 
   // Create new tour member
-  async createTourMember(data) {
+  async createTourMember(data, createdBy) {
     const {
       memberIds,
       tourPackageId,
@@ -195,6 +195,7 @@ class TourMemberService {
         nextReminder: nextReminder ? new Date(nextReminder) : null,
         extra: extra || null,
         status,
+        createdById: createdBy.userId,
       },
       include: {
         tourPackage: {
@@ -234,7 +235,7 @@ class TourMemberService {
   }
 
   // Update tour member
-  async updateTourMember(id, data) {
+  async updateTourMember(id, data, createdBy) {
     const existingTourMember = await prisma.tourMember.findUnique({
       where: { id },
     });
@@ -243,7 +244,7 @@ class TourMemberService {
       throw new Error("Tour member not found");
     }
 
-    const updateData = { ...data };
+    const updateData = { ...data, createdById: createdBy.userId };
 
     // Handle memberIds update
     if (data.memberIds) {
@@ -314,7 +315,7 @@ class TourMemberService {
   }
 
   // Add payment to tour member
-  async addPayment(tourMemberId, paymentData) {
+  async addPayment(tourMemberId, paymentData, createdBy) {
     const tourMember = await prisma.tourMember.findUnique({
       where: { id: tourMemberId },
       include: {
@@ -333,6 +334,7 @@ class TourMemberService {
         paymentMethod: paymentData.paymentMethod,
         note: paymentData.note,
         status: paymentData.status || "PAID",
+        createdById: createdBy.userId,
       },
     });
 
@@ -343,7 +345,7 @@ class TourMemberService {
   }
 
   // Update payment
-  async updatePayment(tourMemberId, paymentId, paymentData) {
+  async updatePayment(tourMemberId, paymentId, paymentData, createdBy) {
     const payment = await prisma.payment.findFirst({
       where: {
         id: paymentId,
@@ -357,7 +359,7 @@ class TourMemberService {
 
     const updatedPayment = await prisma.payment.update({
       where: { id: paymentId },
-      data: paymentData,
+      data: { ...paymentData, createdById: createdBy.userId },
     });
 
     // Update tour member payment status

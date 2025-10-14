@@ -2,9 +2,7 @@
 import { z } from "zod";
 
 const createTourMemberSchema = z.object({
-  memberIds: z
-    .array(z.string().cuid())
-    .min(1, "At least one member must be selected"),
+  memberIds: z.array(z.string()).min(1, "At least one member must be selected"),
   tourPackageId: z.string().cuid("Invalid tour package ID"),
   packagePrice: z.number().min(0, "Package price must be positive"),
   memberCount: z.number().int().min(1, "Member count must be at least 1"),
@@ -18,8 +16,8 @@ const createTourMemberSchema = z.object({
 });
 
 const updateTourMemberSchema = z.object({
-  memberIds: z.array(z.string().cuid()).min(1).optional(),
-  tourPackageId: z.string().cuid().optional(),
+  memberIds: z.array(z.string()).min(1).optional(),
+  tourPackageId: z.string().optional(),
   packagePrice: z.number().min(0).optional(),
   memberCount: z.number().int().min(1).optional(),
   netCost: z.number().min(0).optional(),

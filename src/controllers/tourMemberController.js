@@ -46,7 +46,8 @@ class TourMemberController {
     try {
       const validatedData = createTourMemberSchema.parse(req.body);
       const tourMember = await tourMemberService.createTourMember(
-        validatedData
+        validatedData,
+        req.user
       );
 
       return successResponse(
@@ -66,7 +67,8 @@ class TourMemberController {
       const validatedData = updateTourMemberSchema.parse(req.body);
       const tourMember = await tourMemberService.updateTourMember(
         id,
-        validatedData
+        validatedData,
+        req.user
       );
 
       return successResponse(
@@ -97,7 +99,8 @@ class TourMemberController {
       const validatedData = addPaymentSchema.parse(req.body);
       const payment = await tourMemberService.addPayment(
         tourMemberId,
-        validatedData
+        validatedData,
+        req.user
       );
 
       return successResponse(res, 201, "Payment added successfully", payment);
@@ -113,7 +116,8 @@ class TourMemberController {
       const payment = await tourMemberService.updatePayment(
         tourMemberId,
         paymentId,
-        validatedData
+        validatedData,
+        req.user
       );
 
       return successResponse(res, 200, "Payment updated successfully", payment);

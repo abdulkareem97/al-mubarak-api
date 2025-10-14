@@ -23,7 +23,7 @@ router.get(
 // Get member by ID
 router.get(
   "/:id",
-  // authMiddleware, // Uncomment when auth middleware is available
+  authMiddleware, // Uncomment when auth middleware is available
   memberController.getMemberById
 );
 
@@ -41,14 +41,14 @@ router.delete("/:id", authMiddleware, memberController.deleteMember);
 // Get members by user ID
 router.get(
   "/user/:userid",
-  // authMiddleware, // Uncomment when auth middleware is available
+  authMiddleware, // Uncomment when auth middleware is available
   memberController.getMembersByUserId
 );
 
 // Download document
 router.get(
   "/:id/documents/:filename",
-  // authMiddleware, // Uncomment when auth middleware is available
+  authMiddleware, // Uncomment when auth middleware is available
   memberController.downloadDocument
 );
 

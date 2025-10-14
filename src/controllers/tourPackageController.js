@@ -82,7 +82,8 @@ class TourPackageController {
       // Create tour package first
       const tourPackage = await tourPackageService.createTourPackage(
         validationResult.data,
-        req.file
+        req.file,
+        req.user
       );
 
       // If file was uploaded, move it to correct location
@@ -214,6 +215,8 @@ class TourPackageController {
     try {
       const { id } = req.params;
 
+      console.log("here here ", req.file);
+
       if (!id || id.trim() === "") {
         await cleanupFile(req.file);
         return errorResponse(res, 400, "Tour package ID is required");
@@ -232,7 +235,7 @@ class TourPackageController {
 
       // If file is uploaded, ensure it's in correct directory
       let fileForService = req.file;
-      if (req.file) {
+      if (req.file && req.file.fieldname !== "coverPhoto") {
         const correctPath = await moveFileToCorrectLocation(req.file, id);
         fileForService = { ...req.file, path: correctPath };
       }
@@ -241,7 +244,8 @@ class TourPackageController {
       const tourPackage = await tourPackageService.updateTourPackage(
         id,
         validationResult.data,
-        fileForService
+        fileForService,
+        req.user
       );
 
       return successResponse(

@@ -7,7 +7,7 @@ import prisma from "../config/prisma.js";
  * @param {Object} data - Enquiry data
  * @returns {Promise<Object>} Created enquiry
  */
-export const createEnquiryService = async (data) => {
+export const createEnquiryService = async (data, createdBy) => {
   try {
     const enquiry = await prisma.enquiryForm.create({
       data: {
@@ -15,6 +15,7 @@ export const createEnquiryService = async (data) => {
         phone: data.phone,
         purpose: data.purpose,
         status: data.status || "PENDING",
+        createdById: createdBy.userId,
       },
     });
 
@@ -83,7 +84,7 @@ export const getEnquiryByIdService = async (id) => {
  * @param {Object} data - Update data
  * @returns {Promise<Object>} Updated enquiry
  */
-export const updateEnquiryService = async (id, data) => {
+export const updateEnquiryService = async (id, data, createdBy) => {
   try {
     const enquiry = await prisma.enquiryForm.update({
       where: { id },
@@ -92,6 +93,9 @@ export const updateEnquiryService = async (id, data) => {
         ...(data.phone !== undefined && { phone: data.phone }),
         ...(data.purpose !== undefined && { purpose: data.purpose }),
         ...(data.status !== undefined && { status: data.status }),
+        ...(data.createdById !== undefined && {
+          createdById: createdBy.userId,
+        }),
       },
     });
 
@@ -111,11 +115,11 @@ export const updateEnquiryService = async (id, data) => {
  * @param {string} status - New status
  * @returns {Promise<Object>} Updated enquiry
  */
-export const updateEnquiryStatusService = async (id, status) => {
+export const updateEnquiryStatusService = async (id, status, createdBy) => {
   try {
     const enquiry = await prisma.enquiryForm.update({
       where: { id },
-      data: { status },
+      data: { status, createdById: createdBy.userId },
     });
 
     return enquiry;

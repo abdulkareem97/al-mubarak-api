@@ -57,7 +57,8 @@ class MemberController {
       // Create member with validated data
       const member = await memberService.createMember(
         validationResult.data,
-        req.files
+        req.files,
+        req.user
       );
 
       return successResponse(res, 201, "Member created successfully", member);
@@ -167,7 +168,8 @@ class MemberController {
       const member = await memberService.updateMember(
         id,
         validationResult.data,
-        req.files
+        req.files,
+        req.user
       );
 
       return successResponse(res, 200, "Member updated successfully", member);

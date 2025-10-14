@@ -15,7 +15,7 @@ function generateUserId(lastId) {
 }
 class MemberService {
   // Create new member
-  async createMember(memberData, files) {
+  async createMember(memberData, files, createdBy) {
     try {
       // Process document files if provided
       let documentJson = [];
@@ -43,7 +43,7 @@ class MemberService {
       // 2️⃣ Generate new ID
       const newUserId = generateUserId(lastUser?.id);
 
-      console.log("newUserId", newUserId);
+      console.log("created by", createdBy);
 
       const user = await prisma.user.create({
         data: {
@@ -61,6 +61,7 @@ class MemberService {
           id: newUserId,
           ...memberRecord,
           userid: user.id,
+          createdById: createdBy.userId,
           document: documentJson,
           extra: memberRecord.extra || {},
         },
@@ -140,7 +141,7 @@ class MemberService {
   }
 
   // Update member
-  async updateMember(id, updateData, files) {
+  async updateMember(id, updateData, files, createdBy) {
     try {
       const existingMember = await prisma.member.findUnique({
         where: { id },
@@ -176,6 +177,7 @@ class MemberService {
           ...memberRecord,
           document: documentJson,
           extra: memberRecord.extra || existingMember.extra,
+          createdById: createdBy.userId,
         },
       });
 

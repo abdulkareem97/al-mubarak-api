@@ -14,29 +14,35 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  role      UserRole @default(STAFF)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Member Member[]
+  id             String        @id @default(cuid())
+  name           String?
+  email          String        @unique
+  password       String
+  role           UserRole      @default(STAFF)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  createdMembers Member[]      @relation("MemberCreatedBy")
+  Member         Member[]      @relation("MemberUser")
+  TourPackage    TourPackage[] @relation("MemberCreatedBy")
+  TourMember     TourMember[]  @relation("MemberCreatedBy")
+  Payment        Payment[]     @relation("MemberCreatedBy")
+  EnquiryForm    EnquiryForm[] @relation("MemberCreatedBy")
 }
 
 model Member {
-  id         String       @id @default(cuid())
-  name       String
-  mobileNo   String
-  address    String
-  document   Json
-  extra      Json?
-  user       User         @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userid     String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  TourMember TourMember[]
+  id          String       @id @default(cuid())
+  name        String
+  mobileNo    String
+  address     String
+  document    Json
+  extra       Json?
+  user        User         @relation("MemberUser", fields: [userid], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userid      String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  TourMember  TourMember[]
+  createdBy   User?        @relation("MemberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdById String?
 }
 
 model TourPackage {
@@ -50,6 +56,9 @@ model TourPackage {
   TourMember  TourMember[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  createdBy   User?   @relation("MemberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdById String?
 }
 
 model TourMember {
@@ -84,6 +93,9 @@ model TourMember {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  createdBy   User?   @relation("MemberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdById String?
 }
 
 model Payment {
@@ -98,6 +110,9 @@ model Payment {
   status        PaymentStatus @default(PAID) // in case of failed or pending transactions
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  createdBy   User?   @relation("MemberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdById String?
 }
 
 model EnquiryForm {
@@ -108,6 +123,9 @@ model EnquiryForm {
   status    EnquiryFormStatus @default(PENDING)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
+
+  createdBy   User?   @relation("MemberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdById String?
 }
 
 enum EnquiryFormStatus {

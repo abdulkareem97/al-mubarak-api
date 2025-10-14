@@ -1,8 +1,11 @@
 // File: src/routes/tourMemberRoutes.js
 import express from "express";
 import tourMemberController from "../controllers/tourMemberController.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 // Tour Member Routes
 router.get("/", tourMemberController.getAllTourMembers);

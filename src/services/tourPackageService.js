@@ -5,7 +5,7 @@ import { __dirname } from "../middlewares/upload.js";
 import prisma from "../config/prisma.js";
 class TourPackageService {
   // Create new tour package
-  async createTourPackage(packageData, file) {
+  async createTourPackage(packageData, file, createdBy) {
     try {
       // Process cover photo if provided
       let coverPhotoPath = "";
@@ -21,6 +21,7 @@ class TourPackageService {
             .replace(/\\/g, "/"),
           tourPrice: parseFloat(packageData.tourPrice),
           totalSeat: parseInt(packageData.totalSeat),
+          createdById: createdBy.userId,
         },
       });
 
@@ -110,7 +111,7 @@ class TourPackageService {
   }
 
   // Update tour package
-  async updateTourPackage(id, updateData, file) {
+  async updateTourPackage(id, updateData, file, createdBy) {
     try {
       const existingPackage = await prisma.tourPackage.findUnique({
         where: { id },
@@ -133,6 +134,7 @@ class TourPackageService {
       const dataToUpdate = {
         ...updateData,
         coverPhoto: coverPhotoPath,
+        createdById: createdBy.userId,
       };
 
       // Convert numeric fields if provided

@@ -41,12 +41,15 @@ export const createEnquiry = async (req, res) => {
       return errorResponse(res, 400, "Invalid status value");
     }
 
-    const enquiry = await createEnquiryService({
-      name,
-      phone,
-      purpose,
-      status: status || "PENDING",
-    });
+    const enquiry = await createEnquiryService(
+      {
+        name,
+        phone,
+        purpose,
+        status: status || "PENDING",
+      },
+      req.user
+    );
 
     return successResponse(res, 201, "Enquiry created successfully", enquiry);
   } catch (error) {
@@ -159,7 +162,7 @@ export const updateEnquiry = async (req, res) => {
       return errorResponse(res, 400, "No fields to update");
     }
 
-    const updatedEnquiry = await updateEnquiryService(id, updateData);
+    const updatedEnquiry = await updateEnquiryService(id, updateData, req.user);
 
     return successResponse(
       res,
@@ -205,7 +208,11 @@ export const updateEnquiryStatus = async (req, res) => {
       return errorResponse(res, 404, "Enquiry not found");
     }
 
-    const updatedEnquiry = await updateEnquiryStatusService(id, status);
+    const updatedEnquiry = await updateEnquiryStatusService(
+      id,
+      status,
+      req.user
+    );
 
     return successResponse(
       res,
