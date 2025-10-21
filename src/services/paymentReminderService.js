@@ -13,6 +13,7 @@ class PaymentReminderService {
         paymentType = "",
         dateFrom,
         dateTo,
+        createdById = "",
       } = filters;
 
       // Build where clause
@@ -21,6 +22,10 @@ class PaymentReminderService {
           not: "PAID", // Prisma equivalent of $ne
         },
       };
+
+      if (createdById) {
+        whereClause.createdById = createdById;
+      }
 
       if (tourPackageId) {
         whereClause.tourPackageId = tourPackageId;

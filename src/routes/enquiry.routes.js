@@ -9,12 +9,16 @@ import {
   updateEnquiryStatus,
   deleteEnquiry,
 } from "../controllers/enquiry.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  authorizeRoles,
+} from "../middlewares/auth.middleware.js";
+import { USER_ROLES } from "../constants/string.js";
 
 const router = express.Router();
 
 // All routes are protected with authentication
-router.use(authMiddleware);
+router.use(authMiddleware, authorizeRoles(USER_ROLES.ADMIN, USER_ROLES.STAFF));
 
 // Create new enquiry
 router.post("/", createEnquiry);
@@ -32,6 +36,6 @@ router.put("/:id", updateEnquiry);
 router.patch("/:id/status", updateEnquiryStatus);
 
 // Delete enquiry
-router.delete("/:id", deleteEnquiry);
+router.delete("/:id", authorizeRoles(USER_ROLES.ADMIN), deleteEnquiry);
 
 export default router;

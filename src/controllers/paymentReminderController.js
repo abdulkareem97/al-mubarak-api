@@ -1,4 +1,5 @@
 // controllers/paymentReminderController.js
+import { USER_ROLES } from "../constants/string.js";
 import paymentReminderService from "../services/paymentReminderService.js";
 import { successResponse, errorResponse } from "../utils/response.js";
 
@@ -14,6 +15,9 @@ class PaymentReminderController {
         dateFrom: req.query.dateFrom,
         dateTo: req.query.dateTo,
       };
+
+      if (req.user.role == USER_ROLES.STAFF)
+        filters.createdById = req.user.userId;
 
       const tourMembers =
         await paymentReminderService.getTourMembersWithReminders(filters);

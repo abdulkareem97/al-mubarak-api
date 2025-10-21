@@ -32,12 +32,13 @@ export const createEnquiryService = async (data, createdBy) => {
  * @param {number} limit - Items per page
  * @returns {Promise<Object>} Paginated enquiries
  */
-export const getAllEnquiriesService = async (page = 1, limit = 10) => {
+export const getAllEnquiriesService = async (filters, page = 1, limit = 10) => {
   try {
     const skip = (page - 1) * limit;
 
     const [enquiries, total] = await Promise.all([
       prisma.enquiryForm.findMany({
+        where: { ...filters },
         include: {
           createdBy: {
             select: { id: true, email: true, name: true },

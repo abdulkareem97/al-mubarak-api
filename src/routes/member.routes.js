@@ -1,13 +1,18 @@
 import express from "express";
 import memberController from "../controllers/member.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  authorizeRoles,
+} from "../middlewares/auth.middleware.js";
 import createUploader from "../middlewares/upload.js";
+import { USER_ROLES } from "../constants/string.js";
 const router = express.Router();
 
 // Create member with document upload
 router.post(
   "/",
   authMiddleware,
+  authorizeRoles(USER_ROLES.ADMIN, USER_ROLES.STAFF),
   createUploader("member").array("document", 10),
   memberController.createMember
 );
@@ -15,17 +20,13 @@ router.post(
 // Get all members with pagination and filters
 router.get(
   "/",
-  // authMiddleware, // Uncomment when auth middleware is available
   authMiddleware,
+  authorizeRoles(USER_ROLES.ADMIN, USER_ROLES.STAFF),
   memberController.getAllMembers
 );
 
 // Get member by ID
-router.get(
-  "/:id",
-  authMiddleware, // Uncomment when auth middleware is available
-  memberController.getMemberById
-);
+router.get("/:id", authMiddleware, memberController.getMemberById);
 
 // Update member with optional document upload
 router.put(
@@ -36,19 +37,25 @@ router.put(
 );
 
 // Delete member
-router.delete("/:id", authMiddleware, memberController.deleteMember);
+router.delete(
+  "/:id",
+  authMiddleware,
+  authorizeRoles(USER_ROLES.ADMIN),
+  memberController.deleteMember
+);
 
 // Get members by user ID
 router.get(
   "/user/:userid",
-  authMiddleware, // Uncomment when auth middleware is available
+  authMiddleware,
+
   memberController.getMembersByUserId
 );
 
 // Download document
 router.get(
   "/:id/documents/:filename",
-  authMiddleware, // Uncomment when auth middleware is available
+  authMiddleware,
   memberController.downloadDocument
 );
 

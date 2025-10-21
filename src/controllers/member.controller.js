@@ -9,6 +9,7 @@ import { successResponse, errorResponse } from "../utils/response.js";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { USER_ROLES } from "../constants/string.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -91,11 +92,16 @@ class MemberController {
       if (name) filters.name = name;
       if (mobileNo) filters.mobileNo = mobileNo;
       if (userid) filters.userid = userid;
+      if (req.user.role == "STAFF") filters.createdById = req.user.userId;
+
+      console.log("filters ", filters);
 
       const options = {
         sortBy,
         sortOrder,
       };
+
+      // console.log("req user", req.user);
 
       const result = await memberService.getAllMembers(
         page,
@@ -128,6 +134,7 @@ class MemberController {
       if (!id || id.trim() === "") {
         return errorResponse(res, 400, "Member ID is required");
       }
+      // if (req.user.role == USER_ROLES.STAFF) req.body.createdById = req.user.userId;
 
       const member = await memberService.getMemberById(id);
 

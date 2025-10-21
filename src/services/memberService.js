@@ -88,6 +88,9 @@ class MemberService {
       if (filters.userid) {
         where.userid = filters.userid;
       }
+      if (filters.createdById) {
+        where.createdById = filters.createdById;
+      }
 
       const [members, total] = await Promise.all([
         prisma.member.findMany({

@@ -1,6 +1,7 @@
 // File: src/services/tourMemberService.js
 
 import prisma from "../config/prisma.js";
+import { USER_ROLES } from "../constants/string.js";
 
 class TourMemberService {
   // Get all tour members with pagination and filters
@@ -15,6 +16,7 @@ class TourMemberService {
       search,
       tourPackageId,
       status,
+      user,
     } = options;
 
     const skip = (page - 1) * limit;
@@ -22,6 +24,11 @@ class TourMemberService {
 
     // Build where clause
     const where = {};
+
+    if (user.role == USER_ROLES.STAFF) {
+      where.createdById = user.userId;
+    }
+
     if (tourPackageId) {
       where.tourPackageId = tourPackageId;
     }

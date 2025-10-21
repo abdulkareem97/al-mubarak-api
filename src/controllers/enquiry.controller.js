@@ -8,7 +8,7 @@ import {
   updateEnquiryStatusService,
   deleteEnquiryService,
 } from "../services/enquiry.service.js";
-
+import { USER_ROLES } from "../constants/string.js";
 /**
  * Create a new enquiry
  * @route POST /api/enquiries
@@ -66,6 +66,9 @@ export const getAllEnquiries = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const filters = {};
+    if (req.user.role == USER_ROLES.STAFF)
+      filters.createdById = req.user.userId;
 
     if (page < 1 || limit < 1) {
       return errorResponse(res, 400, "Page and limit must be positive numbers");
@@ -75,7 +78,7 @@ export const getAllEnquiries = async (req, res) => {
       return errorResponse(res, 400, "Limit cannot exceed 100");
     }
 
-    const result = await getAllEnquiriesService(page, limit);
+    const result = await getAllEnquiriesService(filters, page, limit);
 
     return successResponse(res, 200, "Enquiries fetched successfully", result);
   } catch (error) {

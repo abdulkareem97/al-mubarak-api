@@ -146,6 +146,7 @@ class TourPackageController {
       if (search) {
         filters.packageName = search;
       }
+      // if (req.user.role == "STAFF") filters.createdById = req.user.userId;
 
       // console.log("filters ", filters);
       if (packageName) filters.packageName = packageName;

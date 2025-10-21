@@ -15,6 +15,7 @@ class TourMemberController {
     try {
       //   console.log("called", req.query);
       const validatedQuery = getTourMembersQuerySchema.parse(req.query);
+      validatedQuery.user = req.user;
       const result = await tourMemberService.getAllTourMembers(validatedQuery);
 
       return successResponse(res, 200, "Tour members retrieved successfully", {

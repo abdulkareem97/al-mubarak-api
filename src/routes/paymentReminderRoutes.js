@@ -1,12 +1,20 @@
 // routes/paymentReminderRoutes.js
 import express from "express";
 import paymentReminderController from "../controllers/paymentReminderController.js";
+import {
+  authMiddleware,
+  authorizeRoles,
+} from "../middlewares/auth.middleware.js";
+import { USER_ROLES } from "../constants/string.js";
 
 const router = express.Router();
+
+router.use(authMiddleware, authorizeRoles(USER_ROLES.ADMIN, USER_ROLES.STAFF));
 
 // GET /api/tour-members/payment-reminders - Get tour members with payment reminders
 router.get(
   "/tour-members/payment-reminders",
+
   paymentReminderController.getTourMembersWithReminders
 );
 
