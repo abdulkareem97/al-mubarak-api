@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
-"scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "nodemon src/server.js",
-  "start": "node src/server.js",
-  "prod:migrate": "prisma migrate deploy &&  node src/server.js"
-},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prod:migrate": "prisma migrate deploy &&  node src/server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,7 +23,9 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "node-fetch": "^3.3.2",
     "prisma": "^6.15.0",
+    "twilio": "^5.10.3",
     "zod": "^4.1.5"
   },
   "devDependencies": {

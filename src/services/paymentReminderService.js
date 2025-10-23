@@ -1,6 +1,7 @@
 // services/paymentReminderService.js
 
 import prisma from "../config/prisma.js";
+import sendPaymentSMS from "./bulkPersonalizedSMS.js";
 
 class PaymentReminderService {
   // Get tour members with payment reminders based on filters
@@ -226,9 +227,38 @@ class PaymentReminderService {
     }
   }
 
+  formatDate(date) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
   // Helpers
   async sendSMS({ to, message, scheduleDate }) {
-    console.log("Sending SMS:", { to, message, scheduleDate });
+    // console.log("Sending SMS:", { to, message, scheduleDate });
+    // sendPersonalizedBulkSMS([{ to: "+91" + to, body: message }]);
+    sendPaymentSMS(
+      to,
+      "your pending payment",
+      this.formatDate(scheduleDate || this.calculateNextReminderDate()),
+      "Accounts Dept"
+    );
   }
 
   generateSmsMessage(template, member) {
